@@ -34,11 +34,6 @@ export const sequelize = process.env.DATABASE_URL
 
 //Models
 export const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -55,11 +50,6 @@ export const User = sequelize.define('User', {
 });
 
 export const Board = sequelize.define('Board', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -79,11 +69,6 @@ export const Board = sequelize.define('Board', {
 });
 
 export const Column = sequelize.define('Column', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -103,11 +88,6 @@ export const Column = sequelize.define('Column', {
 });
 
 export const Card = sequelize.define('Card', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
     title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -143,11 +123,6 @@ export const Card = sequelize.define('Card', {
 });
 
 export const BoardMember = sequelize.define('BoardMember', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-    },
     board_id: {
         type: DataTypes.UUID,
         allowNull: false,
