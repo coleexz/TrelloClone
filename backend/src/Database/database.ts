@@ -33,4 +33,154 @@ export const sequelize = process.env.DATABASE_URL
     );
 
 //Models
+export const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+});
 
+export const Board = sequelize.define('Board', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    owner_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id',
+        },
+    },
+});
+
+export const Column = sequelize.define('Column', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    board_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: Board,
+            key: 'id',
+        },
+    },
+    position: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+});
+
+export const Card = sequelize.define('Card', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    column_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: Column,
+            key: 'id',
+        },
+    },
+    assignee_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: User,
+            key: 'id',
+        },
+    },
+    position: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    due_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+});
+
+export const BoardMember = sequelize.define('BoardMember', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    board_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: Board,
+            key: 'id',
+        },
+    },
+    user_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id',
+        },
+    },
+    role: {
+        type: DataTypes.ENUM('Owner', 'Editor', 'Viewer'),
+        allowNull: false,
+    },
+});
+
+User.hasMany(Board, { foreignKey: 'owner_id' });
+Board.belongsTo(User, { foreignKey: 'owner_id' });
+
+Board.hasMany(Column, { foreignKey: 'board_id' });
+Column.belongsTo(Board, { foreignKey: 'board_id' });
+
+Column.hasMany(Card, { foreignKey: 'column_id' });
+Card.belongsTo(Column, { foreignKey: 'column_id' });
+
+User.hasMany(Card, { foreignKey: 'assignee_id' });
+Card.belongsTo(User, { foreignKey: 'assignee_id' });
+
+Board.belongsToMany(User, { through: BoardMember, foreignKey: 'board_id' });
+User.belongsToMany(Board, { through: BoardMember, foreignKey: 'user_id' });
